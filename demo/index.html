@@ -6,41 +6,88 @@
     </head>
     <body>
 
+        <form id="form">
+            <p class="point">
+                <label for="point1lat">Point #1 - Latitude/Longitude</label>
+                <input type="text" id="point1lat" name="point1lat" />
+                <input type="text" id="point1lng" name="point1lng" />
+            </p>
+            <p class="point">
+                <label for="point1lat">Point #2 - Latitude/Longitude</label>
+                <input type="text" id="point2lat" name="point2lat" />
+                <input type="text" id="point2lng" name="point2lng" />
+            </p>
+            <p class="point">
+                <label for="point1lat">Point #3 - Latitude/Longitude</label>
+                <input type="text" id="point3lat" name="point3lat" />
+                <input type="text" id="point3lng" name="point3lng" />
+            </p>
+            <p>
+                <label for="address">Address <sup style="color:red;">*</sup></label>
+                <input type="text" id="address" name="address" />
+            </p>
+            <p>
+                <label for="country">Country</label>
+                <select id="country" name="country">
+                    <option></option>
+                    <option value="FR">France</option>
+                    <option value="AO">Angola</option>
+                </select>
+            </p>
+            <p>
+                <input type="submit" value="Submit" />
+            </p>
+        </form>
+
 
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC19j22mjJJJFZ6LYqXUtpXb5aSVLeCBPA"></script>
         <script src="../build/module/index.js" type="module"></script>
         <script type="module">
             import { geocodeAddress, Address } from '../build/module/index.js';
 
-            const points = [
-                {
-                    lat: 0,
-                    lng: 0
-                },
-                {
-                    lat: 10,
-                    lng: 10
-                },
-                {
-                    lat: 20,
-                    lng: 20
-                }
-            ];
+            const form = document.getElementById('form');
 
-            const address = {
-                address: '101 avenue de villiers, 75017 Paris',
-                country: 'FR'
+            form.addEventListener('submit', treatForm);
+
+            const treatForm = async function(e){
+                if(e) e.preventDefault();
+                var data = {};
+                const inputs = form.querySelectorAll('input');
+                inputs.map(function(input){
+                    data[input.getAttribute('id')] = input.value;
+                });
+                const select = form.querySelector('select');
+                data[select.getAttribute('id')] = select.options[select.selectedIndex].value;
+                console.log(data);
+
+                const points = [
+                    {
+                        lat: data.point1lat,
+                        lng: data.point1lng
+                    },
+                    {
+                        lat: data.point2lat,
+                        lng: data.point2lng
+                    },
+                    {
+                        lat: data.point3lat,
+                        lng: data.point3lng
+                    }
+                ];
+                const address = {
+                    address: data.address,
+                    country: data.country
+                };
+                const refPoint = geocodeAddress(address);
+
+                const myPoint = await shortestDistanceCalculator(refPoint, points);
+
+                points.map(function(point, index){
+                    if( point === myPoint ){
+                        console.log(index, myPoint);
+                    }
+                });
             };
-
-            const refPoint = geocodeAddress(address);
-
-            const myPoint = await shortestDistanceCalculator(refPoint, points);
-
-            points.map(function(point, index){
-                if( point === myPoint ){
-                    console.log(index, myPoint);
-                }
-            });
         </script>
 
     </body>
