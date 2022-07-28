@@ -23,3 +23,4 @@ declare module 'shortest-distance-calculator' {
     const shortestDistanceCalculator: number;
     export = shortestDistanceCalculator;
 }
+

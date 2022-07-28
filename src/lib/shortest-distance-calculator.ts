@@ -2,12 +2,27 @@
 type Country = {
   readonly alias: string;
   readonly name: string;
-  readonly bounds: readonly number[]
+  readonly bounds: Bounds
 };
 
+type Bounds = ReadonlyArray<number>;
 
-const getCountryBounds = function (countryNameOrAlias: string): google.maps.LatLngBoundsLiteral | null {
-  const countries: ReadonlyArray<Country> = [
+type Countries = ReadonlyArray<Country>;
+
+type Point = google.maps.LatLngLiteral;
+
+
+const boundsConvert = function (bounds: Bounds): google.maps.LatLngBoundsLiteral {
+  return {
+    east: bounds[0],
+    north: bounds[1],
+    south: bounds[2],
+    west: bounds[3]
+  };
+}
+
+const getCountryBounds = function (countryNameOrAlias: string): google.maps.LatLngBoundsLiteral {
+  const countries: Countries = [
     { "alias": "AF", "name": "Afghanistan", "bounds": [60.5284298033, 29.318572496, 75.1580277851, 38.4862816432] },
     { "alias": "AO", "name": "Angola", "bounds": [11.6400960629, -17.9306364885, 24.0799052263, -4.43802336998] },
     { "alias": "AL", "name": "Albania", "bounds": [19.3044861183, 39.624997667, 21.0200403175, 42.6882473822] },
@@ -188,7 +203,7 @@ const getCountryBounds = function (countryNameOrAlias: string): google.maps.LatL
     }
     return selectedCountry;
   }, countries[0]);
-  return selectedCountry.bounds;
+  return boundsConvert(selectedCountry.bounds);
 };
 
 /**
@@ -198,7 +213,7 @@ const getCountryBounds = function (countryNameOrAlias: string): google.maps.LatL
  * @param b Second point
  * @returns number The distance between the two points in meters
  */
-const distanceBetweenPoints = function (a: google.maps.LatLngLiteral, b: google.maps.LatLngLiteral): number {
+const distanceBetweenPoints = function (a: Point, b: Point): number {
   const R = 6371e3; // metres
   const φ1 = a.lat * Math.PI / 180; // φ, λ in radians
   const φ2 = b.lat * Math.PI / 180;
@@ -215,16 +230,21 @@ const distanceBetweenPoints = function (a: google.maps.LatLngLiteral, b: google.
   return d;
 }
 
-export const geocodeAddress = function (address: string, country?: string): google.maps.LatLngLiteral {
-  const bounds = (undefined !== typeof country) ? getCountryBounds(country) : null;
-  if (bounds) {
-    return new google.maps.Geocoder()
-      .setBounds({ ...bounds })
-      .geocode(address)[0].geometry.location.toJSON();
-  } else {
-    return new google.maps.Geocoder()
-      .geocode(address)[0].geometry.location.toJSON();
-  }
+export const geocodeAddress = async function (address: string): Promise<Point> {
+  const request: google.maps.GeocoderRequest = {
+    address: address
+  };
+  const response: google.maps.GeocoderResponse = await new google.maps.Geocoder().geocode(request);
+  return response.results[0].geometry.location.toJSON();
+}
+
+export const geocodeCountryAddress = async function (address: string, countryIdentifier: string): Promise<Point> {
+  const request: google.maps.GeocoderRequest = {
+    address: address,
+    bounds: getCountryBounds(countryIdentifier)
+  };
+  const response: google.maps.GeocoderResponse = await new google.maps.Geocoder().geocode(request);
+  return response.results[0].geometry.location.toJSON();
 }
 
 /**
@@ -233,9 +253,9 @@ export const geocodeAddress = function (address: string, country?: string): goog
  * @param points 
  * @returns 
  */
-export const shortestDistanceCalculator = function (referencePoint: LatLngLiteral, points: ReadonlyArray<LatLngLiteral>): number {
+export const shortestDistanceCalculator = async function (referencePoint: Point, points: ReadonlyArray<Point>): Promise<number> {
 
-  const nearestPointIndex: number = points.reduce(function (minPointIndex: number, point: LatLngLiteral, index: number, array: ReadonlyArray<LatLngLiteral>): number {
+  const nearestPointIndex: number = points.reduce(function (minPointIndex: number, point: Point, index: number, array: ReadonlyArray<Point>): number {
     const minPoint = array[minPointIndex];
     const minDistance = distanceBetweenPoints(minPoint, referencePoint);
     const curDistance = distanceBetweenPoints(point, referencePoint);
