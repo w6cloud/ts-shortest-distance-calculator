@@ -1,5 +1,3 @@
-import "@types/google.maps";
-
 /**
  * If you import a dependency which does not include its own type definitions,
  * TypeScript will try to find a definition for it by following the `typeRoots`
@@ -23,4 +21,3 @@ declare module 'shortest-distance-calculator' {
     const shortestDistanceCalculator: number;
     export = shortestDistanceCalculator;
 }
-

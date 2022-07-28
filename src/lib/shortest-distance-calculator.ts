@@ -1,4 +1,6 @@
 
+import 'google.maps';
+
 type Country = {
   readonly alias: string;
   readonly name: string;

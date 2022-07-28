@@ -1,1 +1,1 @@
-export * from './lib/number';
+export * from './lib/shortest-distance-calculator';
