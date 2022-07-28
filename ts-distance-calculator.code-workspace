@@ -1,0 +1,83 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"cSpell.userWords": [], // only use words from .cspell.json
+		"cSpell.enabled": true,
+		"editor.formatOnSave": true,
+		"typescript.tsdk": "node_modules/typescript/lib",
+		"typescript.enablePromptUseWorkspaceTsdk": true
+	},
+	"launch": {
+		"version": "0.2.0",
+		"configurations": [
+			// To debug, make sure a *.spec.ts file is active in the editor, then run a configuration
+			{
+				"type": "node",
+				"request": "launch",
+				"name": "Debug Active Spec",
+				"runtimeExecutable": "${workspaceFolder}/node_modules/.bin/ava",
+				"runtimeArgs": [
+					"debug",
+					"--break",
+					"--serial",
+					"${file}"
+				],
+				"port": 9229,
+				"outputCapture": "std",
+				"skipFiles": [
+					"<node_internals>/**/*.js"
+				],
+				"preLaunchTask": "npm: build"
+				// "smartStep": true
+			},
+			{
+				// Use this one if you're already running `yarn watch`
+				"type": "node",
+				"request": "launch",
+				"name": "Debug Active Spec (no build)",
+				"runtimeExecutable": "${workspaceFolder}/node_modules/.bin/ava",
+				"runtimeArgs": [
+					"debug",
+					"--break",
+					"--serial",
+					"${file}"
+				],
+				"port": 9229,
+				"outputCapture": "std",
+				"skipFiles": [
+					"<node_internals>/**/*.js"
+				]
+				// "smartStep": true
+			}
+		]
+	},
+	"extensions": {
+		"recommendations": [
+			"pkief.material-icon-theme",
+			"ms-vscode.vscode-typescript-next",
+			"rbbit.typescript-hero",
+			"salbert.comment-ts",
+			"eliostruyf.vscode-typescript-exportallmodules",
+			"christian-kohler.path-intellisense",
+			"zignd.html-css-class-completion",
+			"mrmlnc.vscode-scss",
+			"davidanson.vscode-markdownlint",
+			"usernamehw.errorlens",
+			"igorsbitnev.error-gutters",
+			"gihansiriwardhana.error-help",
+			"philhindle.errorlens",
+			"better-ts-errors.better-ts-errors",
+			"sygene.auto-correct",
+			"syler.sass-indented",
+			"sasa.vscode-sass-format",
+			"dbaeumer.vscode-eslint",
+			"esbenp.prettier-vscode",
+			"eamodio.gitlens",
+			"streetsidesoftware.code-spell-checker",
+		]
+	}
+}
