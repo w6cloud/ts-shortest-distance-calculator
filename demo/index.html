@@ -1,0 +1,32 @@
+<DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Distance calculator</title>
+    </head>
+    <body>
+
+
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC19j22mjJJJFZ6LYqXUtpXb5aSVLeCBPA"></script>
+        <script src="shortest-distance-calculator.js" type="module"></script>
+        <script type="module">
+            const points = [
+                {
+                    lat: 0,
+                    lng: 0
+                }
+            ];
+
+            const address = '101 avenue de villiers, 75017 Paris';
+
+            const country = 'FR';
+
+            const point = geocodeCountryAddress(address, country);
+
+            const myPoint = await shortestDistanceCalculator(point, points);
+
+            console.log(myPoint);
+        </script>
+
+    </body>
+</html>
