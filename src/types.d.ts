@@ -17,7 +17,35 @@
  * something();
  * ```
  */
+
+import "google.maps";
+
+
 declare module 'shortest-distance-calculator' {
-    const shortestDistanceCalculator: number;
-    export = shortestDistanceCalculator;
+    const getShortestDistance: Promise<number>;
+    export = getShortestDistance;
+}
+
+type Bounds = google.maps.LatLngBoundsLiteral;
+
+type Point = google.maps.LatLngLiteral;
+
+type Points = ReadonlyArray<Point>;
+
+type CountryDesc = {
+    readonly name: string;
+    readonly bounds: Bounds;
+}
+
+type CountryList = {
+    readonly [alias: string]: CountryDesc;
+}
+
+type NearestPointFinder = {
+    (basePoint: Point, points: Points): number;
+}
+
+type Address = {
+    readonly address: string;
+    readonly country?: string;
 }

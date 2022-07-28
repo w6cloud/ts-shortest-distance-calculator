@@ -1,1 +1,2 @@
-export * from './lib/shortest-distance-calculator';
+export * from './lib/NearestPoint';
+export * from './lib/Geocoding';

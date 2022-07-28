@@ -8,24 +8,39 @@
 
 
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC19j22mjJJJFZ6LYqXUtpXb5aSVLeCBPA"></script>
-        <script src="shortest-distance-calculator.js" type="module"></script>
+        <script src="../build/module/index.js" type="module"></script>
         <script type="module">
+            import { geocodeAddress, Address } from '../build/module/index.js';
+
             const points = [
                 {
                     lat: 0,
                     lng: 0
+                },
+                {
+                    lat: 10,
+                    lng: 10
+                },
+                {
+                    lat: 20,
+                    lng: 20
                 }
             ];
 
-            const address = '101 avenue de villiers, 75017 Paris';
+            const address = {
+                address: '101 avenue de villiers, 75017 Paris',
+                country: 'FR'
+            };
 
-            const country = 'FR';
+            const refPoint = geocodeAddress(address);
 
-            const point = geocodeCountryAddress(address, country);
+            const myPoint = await shortestDistanceCalculator(refPoint, points);
 
-            const myPoint = await shortestDistanceCalculator(point, points);
-
-            console.log(myPoint);
+            points.map(function(point, index){
+                if( point === myPoint ){
+                    console.log(index, myPoint);
+                }
+            });
         </script>
 
     </body>
